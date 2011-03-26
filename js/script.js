@@ -1,13 +1,10 @@
-/* Author: 
-
-*/
 (function(global, undefined) {
   
   // Configure RequireJS
   require({
     baseUrl: 'js/',
     paths: {
-      'jquery': 'libs/jquery-1.5.1',
+      'jquery': 'libs/jquery-1.5.1'
     },
     // Load jQuery before any other scripts
     priority: ['jquery']

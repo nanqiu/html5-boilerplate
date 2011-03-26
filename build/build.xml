@@ -130,6 +130,15 @@
                 <antcall target="-build.test" />
             </then>
         </elseif>
+        
+        <elseif>
+            <equals arg1="${env}" arg2="require"/>
+            <then>
+                <!-- Build a require environment -->
+                <echo message="Building a RequireJS Environment..."/>
+                <antcall target="-build.require" />
+            </then>
+        </elseif>
 
         <else>
             <!-- Build a production environment -->
@@ -157,6 +166,15 @@
                 <antcall target="-minify.test"/>
             </then>
         </elseif>
+        
+        <elseif>
+            <equals arg1="${env}" arg2="require"/>
+            <then>
+                <!-- Build a require environment -->
+                <echo message="Building a RequireJS Environment..."/>
+                <antcall target="-minify.require" />
+            </then>
+        </elseif>
 
         <else>
             <!-- Build a production environment -->
@@ -165,6 +183,11 @@
         </else>
     </if>
     </target>
+    
+	<target name="requirejs">
+        <echo message="Combining and minifying JS files." />
+        <antcall target="-js.require"/>
+	</target>
     
     
     <!--
@@ -322,6 +345,18 @@
                      -htmlclean,
                      -imagespng,
                      -imagesjpg"/>
+                     
+    <target name="-build.require"
+            depends="-rev,
+                     -clean,
+                     -prodcopy,
+                     -usemin,
+                     -js.require,
+                     -css,
+                     -html,
+                     -htmlclean,
+                     -imagespng,
+                     -imagesjpg"/>
 
     <!-- Target: minify -->
     <target name="-minify.dev"
@@ -363,6 +398,19 @@
                      -htmlcompress,
                      -imagespng,
                      -imagesjpg"/>
+                     
+    <target name="-minify.require"
+            depends="-rev,
+                     -clean,
+                     -prodcopy,
+                     -usemin,
+                     -js.require,
+                     -css,
+                     -html,
+                     -htmlcompress,
+                     -imagespng,
+                     -imagesjpg"/>
+    
 
     <!--
     *************************************************
@@ -561,6 +609,27 @@
             </fileset>
         </replaceregexp>
     </target>
+    
+    <!-- RequireJS -->
+    <target name="-js.require" description="Combine and minify files.">
+        <property name="requirejs.build.dir" value="${basedir}/${dir.build}/tools/requirejs/build/" />
+        <property name="requirejs.bin.dir" value="${basedir}/${dir.build}/tools/requirejs/bin/" />
+		
+        <property name="requirejs.optimizer.settings" value="${basedir}/${dir.build}/config/build.js" />
+		
+		<echo message="Combining and minifying JS files using RequireJS Optimization Tool" />
+		
+	    <java classname="org.mozilla.javascript.tools.shell.Main">
+	        <classpath>
+	            <pathelement location="${requirejs.build.dir}/lib/rhino/js.jar" />
+	            <pathelement location="${requirejs.build.dir}/lib/closure/compiler.jar" />
+	        </classpath>
+	        <arg value="${requirejs.bin.dir}/x.js" />
+	        <arg value="${requirejs.bin.dir}" />
+	        <arg value="${requirejs.build.dir}/build.js" />
+	        <arg value="${requirejs.optimizer.settings}" />
+	    </java>
+	</target>
     
     
     <!-- HTML -->

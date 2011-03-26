@@ -1,7 +1,7 @@
 (function(global, undefined) {
   
   define({
-    sayHi: function(){
+    sayHi: function() {
       return "Hello Nurse!";
     }
   });
